@@ -50,7 +50,7 @@ app.post("/chat", async (req, res) => {
     { role: "user", content },
   ];
 
-  const openai = new OpenAIApi(new Configuration({ apiKey: OPENAI_KEY }));
+  const openai = new OpenAIApi(new Configuration({ apiKey: config.OPENAI_KEY }));
 
   try {
     // 请求 GPT 获取回复

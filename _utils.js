@@ -4,8 +4,9 @@ const crypto = require('crypto');
 const axios = require('axios');
 
 // 从环境变量中获取到钉钉的相关配置
-const DING_APP_KEY = process.env.DING_APP_KEY || '';
-const DING_APP_SECRET = process.env.DING_APP_SECRET || '';
+// const DING_APP_KEY = process.env.DING_APP_KEY || '';
+// const DING_APP_SECRET = process.env.DING_APP_SECRET || '';
+const { DING_APP_KEY, DING_APP_SECRET } = config;
 
 // 辅助方法，用于根据钉钉的规则生成签名，校验消息合法性
 function generateSign(timestamp) {
@@ -25,13 +26,19 @@ async function getAccessToken() {
   }
 
   // 先从数据库中获取 token 看下是否过期，这样不用每次都发起请求
-  const TokenTable = aircode.db.table('token');
-  const item = await TokenTable.where().sort({ expiredAt: -1 }).findOne();
+  // const TokenTable = aircode.db.table('token');
+  // const item = await TokenTable.where().sort({ expiredAt: -1 }).findOne();
+  // 如果 token 还在有效期内，则直接返回
+  // if (item && item.expiredAt > now) {
+  //   return item.token;
+  // }
+  // 先从config取 token 看下是否过期，这样不用每次都发起请求
+  let { token, expiredAt } = config;
   const now = Date.now();
 
   // 如果 token 还在有效期内，则直接返回
-  if (item && item.expiredAt > now) {
-    return item.token;
+  if (token && expiredAt > now) {
+    return token;
   }
 
   // 否则，请求钉钉获取 token
@@ -43,11 +50,12 @@ async function getAccessToken() {
     }
   );
 
-  const token = data.accessToken;
-  const expiredAt = now + data.expireIn * 1000;
-
+  // const token = data.accessToken;
+  // const expiredAt = now + data.expireIn * 1000;
   // 将 token 存入数据库
-  await TokenTable.save({ token, expiredAt });
+  // await TokenTable.save({ token, expiredAt });
+  token = data.accessToken;
+  expiredAt = now + data.expireIn * 1000;
 
   // 返回 token
   return token;
