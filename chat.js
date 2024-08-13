@@ -1,5 +1,5 @@
 // @see https://docs.aircode.io/guide/functions/
-const aircode = require('aircode');
+// const aircode = require('aircode');
 const { Configuration, OpenAIApi } = require('openai');
 const { generateSign, reply, handleError } = require('./_utils');
 
@@ -46,17 +46,10 @@ module.exports = async function (params, context) {
 
   // 将用户的问题存入数据表中，后续方便进行排查，或者支持连续对话
   const { content } = text;
-  const ChatsTable = aircode.db.table('chats');
-  await ChatsTable.save({ conversationId, role: 'user', content });
-
-    // 查询历史消息
-  const chatHistory = await ChatsTable.where({ conversationId }).find();
-
-    // 构建发送给 GPT 的消息体
+  // 构建发送给 GPT 的消息体
   const messages = [
-    // { role: 'system', content: 'You are a helpful assistant.' },
-    ...chatHistory.slice(-5).map(chat => ({ role: chat.role, content: chat.content })),
-    // { role: 'user', content },
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content },
   ];
 
 
@@ -71,10 +64,6 @@ module.exports = async function (params, context) {
     });
 
     const responseMessage = completion.data.choices[0].message;
-
-    // 将 ChatGPT 的响应也存入数据库
-    await ChatsTable.save({ conversationId,role: 'assistant', ...responseMessage });
-
     // 回复钉钉用户消息
     return reply(params, responseMessage.content);
   } catch (error) {

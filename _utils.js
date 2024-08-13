@@ -1,5 +1,5 @@
 // @see https://docs.aircode.io/guide/functions/
-const aircode = require('aircode');
+// const aircode = require('aircode');
 const crypto = require('crypto');
 const axios = require('axios');
 const config = require("./config");
