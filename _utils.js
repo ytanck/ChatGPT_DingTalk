@@ -2,6 +2,7 @@
 const aircode = require('aircode');
 const crypto = require('crypto');
 const axios = require('axios');
+const config = require("./config");
 
 // 从环境变量中获取到钉钉的相关配置
 // const DING_APP_KEY = process.env.DING_APP_KEY || '';
