@@ -1,0 +1,11 @@
+{
+  "name": "A copy from 钉钉 ChatGPT 机器人",
+  "runtime": "node/v16",
+  "region": "HK",
+  "envs": [
+    "DING_APP_KEY",
+    "DING_APP_SECRET",
+    "OPENAI_KEY"
+  ],
+  "typescript": false
+}
